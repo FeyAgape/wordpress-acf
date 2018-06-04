@@ -1,0 +1,77 @@
+ACF codes and wordpress variables
+
+<?php echo get_site_url(); ?>
+
+<?php echo get_template_directory_uri(); ?>
+
+<?php echo do_shortcode('[SHORTCODE HERE]'); ?>
+
+<?php the_field('VARIABLENAME'); ?>
+
+//Repeater
+<?php if(get_field('VARIABLENAME')): ?>
+  <?php while(has_sub_field('VARIABLENAME')): ?>
+
+    <?php the_sub_field('VARIABLENAME'); ?>
+
+        //Repeater inside Repeater
+        <?php if( have_rows('VARIABLENAME') ): ?>
+        <?php while( have_rows('VARIABLENAME') ): the_row(); ?>
+            <?php the_sub_field('VARIABLENAME'); ?>
+        <?php endwhile; ?>
+        <?php endif; ?> 
+
+  <?php endwhile; ?>
+<?php endif; ?> 
+
+//image
+<?php $slider_image = get_sub_field('slider_image'); ?>
+<img src="<?php echo $slider_image['url']; ?>" alt="<?php echo $slider_image['alt']; ?>" />
+
+//Another way of writing image
+<?php $introimage = get_field('intro_image'); 
+$introimageAlt = $introimage['alt']; // Grab, from the array, the 'alt'
+$introimageURL = $introimage['url']; // Grab the full size version
+?>
+<img src="<?php echo $introimageURL; ?>" alt="<?php echo $introimageAlt; ?>" />
+
+
+//Widgets
+
+//Add inside functions.php widget init()
+
+register_sidebar( array(
+		'name'          => esc_html__( 'FooterTwo', 'cshaynes' ),
+		'id'            => 'footer-2',
+		'description'   => esc_html__( 'Add widgets here.', 'cshaynes' ),
+		'before_widget' => '<section id="%1$s">',
+		'after_widget'  => '</section>',
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>',
+	) );
+
+//Add in footer
+<?php
+    if(is_active_sidebar('footer-2')){
+        dynamic_sidebar('footer-2');
+    }
+?>
+
+//Flexibile field 
+
+<?php 
+if( have_rows('flexible_work_page') ):
+while ( have_rows('flexible_work_page') ) : the_row();
+
+//With conditional statements
+if ( get_row_layout() == 'banner' ): ?>
+
+<?php the_sub_field('VARIABLENAME'); ?>
+
+<?php elseif ( get_row_layout() == '1_column_text' ): ?>
+
+<?php the_sub_field('VARIABLENAME'); ?>
+
+<?php endif; ?>
+<?php endwhile; ?>
+<?php endif; ?>
